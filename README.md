@@ -1,2 +1,2 @@
 # Card-Vault
-Web based startup
+TCG Platform
