@@ -2,6 +2,15 @@
 TCG Platform
 
 ## Dependencies
-`React Native using Expo` - https://reactnative.dev/docs/environment-setup
 
-`Environment Set Up` - https://reactnative.dev/docs/set-up-your-environment
+`Nodejs` - https://nodejs.org/en/download
+
+`npm` - npm install -g npm
+
+`Node Version Manager (nvm)` 
+  - Linux: https://github.com/nvm-sh/nvm
+  - Windows: https://github.com/coreybutler/nvm-windows
+
+## To Build
+
+`To Run` - npx expo start
