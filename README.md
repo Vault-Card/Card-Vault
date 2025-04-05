@@ -11,6 +11,12 @@ TCG Platform
   - Linux: https://github.com/nvm-sh/nvm
   - Windows: https://github.com/coreybutler/nvm-windows
 
+`Android Studio` - https://docs.expo.dev/workflow/android-studio-emulator/
+
 ## To Build
 
 `To Run` - npx expo start
+
+## Expo Documentation
+
+https://docs.expo.dev/
