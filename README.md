@@ -13,7 +13,9 @@ TCG Platform
 
 `Android Studio` - https://docs.expo.dev/workflow/android-studio-emulator/
 
-## To Build
+## To Run
+
+`Have Your Device Running`
 
 `To Run` - npx expo start
 
