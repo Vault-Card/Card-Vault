@@ -1,0 +1,63 @@
+openapi: 3.0.3
+info:
+  title: Cards Upload API
+  version: 1.0.0
+  description: API for uploading card metadata and an image to DynamoDB and S3
+
+paths:
+  /cards:
+    post:
+      summary: Upload card metadata and image
+      operationId: uploadCard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+                - imageBase64
+              properties:
+                id:
+                  type: string
+                  example: "user123"
+                  description: Unique ID for the card
+                name:
+                  type: string
+                  example: "Isaac"
+                  description: Name of the user/card
+                imageBase64:
+                  type: string
+                  example: "/9j/4AAQSkZJRgABAQAAAQABAAD..."
+                  description: Base64-encoded image (JPEG)
+      responses:
+        '200':
+          description: Successfully uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Image and metadata stored!"
+                  s3Key:
+                    type: string
+                    example: "user123.jpg"
+        '400':
+          description: Missing required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Missing required fields: id, name, imageBase64"
+      tags:
+        - Cards
+
+components:
+  schemas: {}
