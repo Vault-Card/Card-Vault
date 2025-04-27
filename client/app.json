@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Card-Vault",
-    "slug": "Card-Vault",
+    "name": "test",
+    "slug": "test",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.kauercurtis.test"
     },
     "web": {
       "bundler": "metro",
