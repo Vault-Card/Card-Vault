@@ -39,7 +39,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Bootstrap CDK Environment
-        run: cdk bootstrap
+        run: npx cdk bootstrap
 
       - name: Deploy CDK Stack
         run: cdk deploy --require-approval never
