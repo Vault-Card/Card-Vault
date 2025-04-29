@@ -13,6 +13,7 @@ export const handler = async (event: any) => {
 
   console.log("id:", id);
   console.log("name:", name);
+  console.log("adding print statement to test CI/CD changes.")
 
   if (!id || !name || !imageBase64) {
     return {
