@@ -35,8 +35,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
 
-      - name: CDK Bootstrap (optional first-time)
-        run: npx cdk bootstrap
-
       - name: Deploy CDK Stack
         run: npx cdk deploy --require-approval never
