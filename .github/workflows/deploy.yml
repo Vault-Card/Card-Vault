@@ -38,6 +38,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
 
+      - name: CDK Synth CF Template
+        run: cdk synth
+
       - name: Bootstrap CDK Environment
         run: cdk bootstrap
 
