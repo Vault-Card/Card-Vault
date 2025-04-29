@@ -38,8 +38,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
 
-      - name: Bootstrap CDK Environment
-        run: npx cdk bootstrap
+      # - name: Bootstrap CDK Environment
+      #   run: npx cdk bootstrap
 
       - name: Deploy CDK Stack
         run: cdk deploy --require-approval never
