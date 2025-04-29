@@ -26,7 +26,7 @@ jobs:
         run: npm install
 
       - name: Install AWS CDK CLI
-        run: npm install -g aws-cdk@2.179.0  # or whatever version you prefer
+        run: npm install -g aws-cdk # or whatever version you prefer
 
       - name: Compile TypeScript
         run: npm run build
