@@ -5,10 +5,10 @@ const { v4: uuidv4 } = require('uuid');
 
 const API_URL = 'https://955419w6w3.execute-api.us-west-2.amazonaws.com/prod/cards';
 
-// === Modify these ===
-const imagePath = './me.jpeg';   // Path to your image file
-const id = uuidv4();             // Generate a random unique ID for the card
-const name = 'Isaac Headshot'; // Metadata name
+
+const imagePath = './me.jpeg';   
+const id = uuidv4();            
+const name = 'Isaac Headshot';
 
 async function uploadImage() {
   try {
