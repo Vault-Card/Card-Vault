@@ -30,45 +30,65 @@ export class BackendStack extends cdk.Stack {
       bucketName: 'card-photo-bucket',
     });
  
-    // Lambda
-    const getCardsFunction = new NodejsFunction(this, 'MyFunction', {
+    // Lambdas
+    const uploadCardFunction = new NodejsFunction(this, 'MyFunction', {
       entry: path.join(__dirname, '/lambdas/dataHandler.ts'),
       handler: 'handler',
       runtime: Runtime.NODEJS_22_X, // ADD THIS LINE
-
-      bundling: {
-        forceDockerBundling: false, // force using local esbuild
-      },
       environment: {
         TABLE_NAME: table.tableName,
         BUCKET_NAME: bucket.bucketName,
       }
     });
 
-    getCardsFunction.addToRolePolicy(new iam.PolicyStatement({
+    const deleteCardFunction = new NodejsFunction(this, 'DeleteCardFunction', {
+      entry: path.join(__dirname, '/lambdas/cardPhotoDelete.ts'),
+      handler: 'handler',
+      runtime: Runtime.NODEJS_22_X, // ADD THIS LINE
+      environment: {
+        TABLE_NAME: table.tableName,
+        BUCKET_NAME: bucket.bucketName,
+      }
+    });
+
+    uploadCardFunction.addToRolePolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['dynamodb:PutItem'],
       resources: ['arn:aws:dynamodb:us-west-2:263167772103:table/cards'],
     }));
 
-    table.grantWriteData(getCardsFunction);
+    deleteCardFunction.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:DeleteItem'],
+      resources: ['arn:aws:dynamodb:us-west-2:263167772103:table/cards'],
+    }));
+
+    table.grantWriteData(uploadCardFunction);
+    table.grantWriteData(deleteCardFunction);
 
     // Grant the Lambda function permissions to write to the S3 bucket
     bucket.grantWrite(new iam.ServicePrincipal('lambda.amazonaws.com'));
+
     // Add a policy to allow the Lambda function to write to the S3 bucket
-    getCardsFunction.addToRolePolicy(new iam.PolicyStatement({
+    uploadCardFunction.addToRolePolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['s3:PutObject'],
+      resources: [`arn:aws:s3:::${bucket.bucketName}/*`],
+    }));
+
+    deleteCardFunction.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['s3:DeleteObject'],
       resources: [`arn:aws:s3:::${bucket.bucketName}/*`],
     }));
 
     
 
     const cardsResource = restApi.root.addResource('cards');
-
     // Add a GET method to that resource and link it to your Lambda
     // cardsResource.addMethod('GET', new cdk.aws_apigateway.LambdaIntegration(getCardsFunction));
-    cardsResource.addMethod('POST', new cdk.aws_apigateway.LambdaIntegration(getCardsFunction));
+    cardsResource.addMethod('POST', new cdk.aws_apigateway.LambdaIntegration(uploadCardFunction));
+    cardsResource.addMethod('DELETE', new cdk.aws_apigateway.LambdaIntegration(deleteCardFunction));
 
   }
 }
