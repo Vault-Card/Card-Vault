@@ -12,7 +12,7 @@ export const handler = async (event: any) => {
   if (!id) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ message: 'Missing required field: id' }),
+      body: JSON.stringify({ message: 'Missing card id.' }),
     };
   }
 
@@ -23,9 +23,7 @@ export const handler = async (event: any) => {
   try {
     await dynamo.send(new DeleteItemCommand({
       TableName: tableName,
-      Key: {
-        id: { S: id }
-      }
+      Key: { id: { S: id } },
     }));
 
     await s3.send(new DeleteObjectCommand({
@@ -35,13 +33,13 @@ export const handler = async (event: any) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: `Deleted item with id ${id}` }),
+      body: JSON.stringify({ message: `Deleted card ${id}` }),
     };
   } catch (error: any) {
-    console.error('Error deleting item:', error);
+    console.error('Error deleting card:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Error deleting item', error: error.message }),
+      body: JSON.stringify({ message: 'Delete failed', error: error.message }),
     };
   }
 };

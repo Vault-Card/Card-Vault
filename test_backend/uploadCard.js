@@ -1,29 +1,34 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-const { v4: uuidv4 } = require('uuid');
+const uuid = require('uuid');
 
-const API_URL = 'https://955419w6w3.execute-api.us-west-2.amazonaws.com/prod/cards';
+const API_URL = 'https://d942zlq098.execute-api.us-east-1.amazonaws.com/prod/cards';
 
+// === Modify these ===
+const imagePath = './me.jpeg';  
+const cardId = uuid.v4(); 
+const cardName = 'Isaac Linkedin';
+const cardPrice = 12.99;
+const printId = '1st-edition';
 
-const imagePath = './me.jpeg';   
-const id = uuidv4();            
-const name = 'Isaac Headshot';
-
-async function uploadImage() {
+async function uploadCard() {
   try {
     const imageBase64 = fs.readFileSync(path.resolve(imagePath), { encoding: 'base64' });
 
-    const payload = {
-      id,
-      name,
-      imageBase64
+    const card = {
+      id: cardId,
+      name: cardName,
+      price: cardPrice,
+      print_id: printId,
+      imageBase64, // Only needed by Lambda to upload to S3
+      // imgurl will be generated in the Lambda based on bucket name + id
     };
 
-    const response = await axios.post(API_URL, payload, {
+    const response = await axios.post(API_URL, { card }, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
 
     console.log('✅ Upload success:', response.data);
@@ -32,4 +37,5 @@ async function uploadImage() {
   }
 }
 
-uploadImage();
+uploadCard();
+

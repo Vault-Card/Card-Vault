@@ -6,37 +6,37 @@ const s3 = new S3Client({});
 
 export const handler = async (event: any) => {
   const isApiGateway = !!event.queryStringParameters || !!event.body;
-
-  // Parse input from query params or direct invocation
   const data = isApiGateway ? JSON.parse(event.body || '{}') : event;
-  const { id, name, imageBase64 } = data;
+  const { card } = data;
 
-  console.log("id:", id);
-  console.log("name:", name);
-  console.log("adding print statement to test CI/CD changes.")
-
-  if (!id || !name || !imageBase64) {
+  if (!card || !card.id || !card.name || !card.imageBase64) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ message: 'Missing required fields: id, name, imageBase64' }),
+      body: JSON.stringify({ message: 'Missing required fields in card object.' }),
     };
   }
+
+  const bucketName = process.env.BUCKET_NAME!;
+  const imageKey = `${card.id}.jpg`;
+  const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
 
   // Store metadata in DynamoDB
   await dynamo.send(new PutItemCommand({
     TableName: process.env.TABLE_NAME,
     Item: {
-      id: { S: id },
-      name: { S: name },
+      id:        { S: card.id },
+      name:      { S: card.name },
+      imgurl:    { S: imageUrl },
+      price:     { N: String(card.price || 0) },
+      print_id:  { S: card.print_id || '' },
     }
   }));
 
-  // Decode base64 image and store in S3
-  const imageBuffer = Buffer.from(imageBase64, 'base64');
-  const imageKey = `${id}.jpg`;
+  // Upload image to S3
+  const imageBuffer = Buffer.from(card.imageBase64, 'base64');
 
   await s3.send(new PutObjectCommand({
-    Bucket: process.env.BUCKET_NAME,
+    Bucket: bucketName,
     Key: imageKey,
     Body: imageBuffer,
     ContentType: 'image/jpeg',
@@ -45,8 +45,9 @@ export const handler = async (event: any) => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: 'Image and metadata stored!',
+      message: 'Card uploaded successfully!',
       s3Key: imageKey,
+      imageUrl,
     }),
   };
 };

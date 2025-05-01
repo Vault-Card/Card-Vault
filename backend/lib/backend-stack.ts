@@ -17,22 +17,21 @@ export class BackendStack extends cdk.Stack {
     const restApi = new RestApi(this, 'cards-api');
 
     // DynamoDB
-    const table = new dynamodb.Table(this, 'Table', {
+    const table = new dynamodb.Table(this, 'CardsTable', {
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
       tableClass: dynamodb.TableClass.STANDARD,
-      tableName: 'cards'
     });
 
     // add S3 bucket
-    const bucket = new s3.Bucket(this, 'MyBucket', {
+    const bucket = new s3.Bucket(this, 'CardPhotoBucket', {
       removalPolicy: cdk.RemovalPolicy.DESTROY, // NOT recommended for production code
       autoDeleteObjects: true, // NOT recommended for production code
-      bucketName: 'card-photo-bucket',
+      publicReadAccess: true
     });
  
     // Lambdas
-    const uploadCardFunction = new NodejsFunction(this, 'MyFunction', {
-      entry: path.join(__dirname, '/lambdas/dataHandler.ts'),
+    const uploadCardFunction = new NodejsFunction(this, 'UploadCardsFunction', {
+      entry: path.join(__dirname, '/lambdas/cardPhotoUpload.ts'),
       handler: 'handler',
       runtime: Runtime.NODEJS_22_X, // ADD THIS LINE
       environment: {
