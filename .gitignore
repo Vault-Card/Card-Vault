@@ -1,4 +1,8 @@
 model/dataTools/all-cards.csv
 model/dataTools/all-cards.json
 model/dataTools/all-cards-png.csv
-client/android
+model/dataTools/difference.csv
+model/dataTools/image_list.csv
+model/dataTools/test.csv
+model/downloaded_images/
+model/test.jpg

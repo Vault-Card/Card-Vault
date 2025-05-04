@@ -2,7 +2,6 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 from io import BytesIO
-import requests
 
 # Define the device (CPU or GPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -117,12 +116,16 @@ def get_image_bytes_from_url(url):
     Returns:
         bytes: The image bytes, or None on error.
     """
+
+    with open(url, 'rb') as f:
+        image_bytes = f.read()
+
+    # image = Image.open(BytesIO(image_bytes)).convert('RGB')
+
     try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
-        return response.content
-    except requests.exceptions.RequestException as e:
-        print(f"Error downloading image from {url}: {e}")
+        return image_bytes
+    except:
+        print(f"Error handling image at {url}")
         return None
 
 def main(model_path, csv_path, image_url):
@@ -157,7 +160,7 @@ def main(model_path, csv_path, image_url):
 if __name__ == '__main__':
     # Example usage:  Replace with your actual paths and image URL.
     model_path = 'image_id_model.pth'  # Path to your saved model
-    csv_path = 'your_data.csv'  # Path to your CSV file
-    image_url = 'https://example.com/your_image.png'  # Replace with a real image URL for testing
+    csv_path = 'dataTools/test.csv'  # Path to your CSV file
+    image_url = 'test.jpg'  # Replace with a real image URL for testing
 
     main(model_path, csv_path, image_url)
