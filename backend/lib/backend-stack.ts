@@ -31,8 +31,8 @@ export class BackendStack extends cdk.Stack {
     });
  
     // Lambdas
-    const uploadCardFunction = new NodejsFunction(this, 'MyFunction', {
-      entry: path.join(__dirname, '/lambdas/dataHandler.ts'),
+    const uploadCardFunction = new NodejsFunction(this, 'UploadCardFunction', {
+      entry: path.join(__dirname, '/lambdas/cardPhotoUpload.ts'),
       handler: 'handler',
       runtime: Runtime.NODEJS_22_X, // ADD THIS LINE
       environment: {
