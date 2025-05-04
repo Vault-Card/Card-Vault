@@ -2,6 +2,10 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 from io import BytesIO
+import requests
+import sys
+import logging
+import json
 
 # Define the device (CPU or GPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -116,19 +120,26 @@ def get_image_bytes_from_url(url):
     Returns:
         bytes: The image bytes, or None on error.
     """
-
+    """
+    try:
+        # response = requests.get(url)
+        # response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+        return url
+    except requests.exceptions.RequestException as e:
+        print(f"Error downloading image from {url}: {e}")
+        return None
+    """    
     with open(url, 'rb') as f:
         image_bytes = f.read()
-
-    # image = Image.open(BytesIO(image_bytes)).convert('RGB')
 
     try:
         return image_bytes
     except:
         print(f"Error handling image at {url}")
         return None
+    
 
-def main(model_path, csv_path, image_url):
+def main(model_path, csv_path, image_path):
     """Main function to run the agent.
 
     Args:
@@ -136,6 +147,7 @@ def main(model_path, csv_path, image_url):
         csv_path (str): Path to the CSV file containing the data.
         image_url (str): The URL of the image to predict.
     """
+
     # Load data to create the id_to_label mapping
     df = load_data(csv_path)
     id_to_label = create_id_to_label_mapping(df)
@@ -153,14 +165,23 @@ def main(model_path, csv_path, image_url):
     # Predict the ID
     predicted_id = predict_id(model, image_bytes, id_to_label)
     if predicted_id:
-        print(f"Predicted ID: {predicted_id}")
+        # print(f"predicted ID: {predicted_id}")
+        print(json.dumps({"status": "success", "id": predicted_id}))
     else:
         print("Failed to predict ID.")
 
 if __name__ == '__main__':
-    # Example usage:  Replace with your actual paths and image URL.
+    
+    if len(sys.argv) != 2:
+        logging.error("Usage: agent.py <image_file_path>")
+        sys.exit(1)
+
+    image_url = sys.argv[1]
+    logging.info(f"Agent started. Processing image: {image_url}")
+
     model_path = 'image_id_model.pth'  # Path to your saved model
-    csv_path = 'dataTools/test.csv'  # Path to your CSV file
-    image_url = 'test.jpg'  # Replace with a real image URL for testing
+    csv_path = 'test.csv'  # Path to your CSV file
+    # image_url = 'image_file_path'  # Replace with a real image URL for testing
 
     main(model_path, csv_path, image_url)
+    
