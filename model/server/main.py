@@ -59,14 +59,14 @@ def validate_image(image_bytes):
         logging.error(f"Error validating image: {e}")
         return False
 
-@app.route('/uploads', methods=['PUT'])
+@app.route('/uploads', methods=['POST'])
 def upload_image():
     """
     Handles PUT requests to upload images.  The image data should be in the
     request body as raw bytes.  Validates the image data, saves it to the
     server's filesystem, and returns a JSON response with the filename.
     """
-    if request.method == 'PUT':
+    if request.method == 'POST':
         # Check if data is present in the request
         if not request.data:
             logging.error("No data received in the request body")
@@ -128,7 +128,7 @@ def upload_image():
             logging.error(f"Error saving image: {e}")
             return Response(f"Error saving image: {e}", status=500)
     else:
-        return Response("Invalid method.  Use PUT", status=405)
+        return Response("Invalid method.  Use POST", status=405)
 
 #  Flask security notes:
 #  * This is a basic example and does not include any authentication or authorization.

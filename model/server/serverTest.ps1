@@ -20,7 +20,7 @@ $headers = @{
 
 # Send the PUT request with the image bytes in the body
 try {
-    $response = Invoke-RestMethod -Uri $url -Method Put -Body $imageBytes -Headers $headers -ErrorAction Stop
+    $response = Invoke-RestMethod -Uri $url -Method Post -Body $imageBytes -Headers $headers -ErrorAction Stop
     # If the server returns a 201 Created, the following will be executed
     Write-Host "Image uploaded successfully!"
     Write-Host "Response:" ($response |ConvertTo-Json -Depth 4) #pretty print
