@@ -1,6 +1,11 @@
 # Server
 A simple server to host the Machine Learning Agent on
 
+## EC2 Address
+
+`http://ec2-3-17-13-127.us-east-2.compute.amazonaws.com:5000/predict`
+
+
 ## Python Dependencies 
 
 `torch`
