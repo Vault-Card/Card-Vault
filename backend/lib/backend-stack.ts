@@ -3,9 +3,7 @@ import { RestApi } from 'aws-cdk-lib/aws-apigateway';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import path = require('path');
-import * as fs from 'fs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as iam from 'aws-cdk-lib/aws-iam';
@@ -15,34 +13,6 @@ export class BackendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // EC2 Instance for model
-    const vpc = new ec2.Vpc(this, 'MLVpc', {
-      maxAzs: 1
-    });
-
-    const securityGroup = new ec2.SecurityGroup(this, 'FlaskSG', {
-      vpc,
-      description: 'Allow SSH and Flask HTTP access',
-      allowAllOutbound: true
-    });
-
-    securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22), 'Allow SSH');
-    securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(5000), 'Allow Flask');
-
-    const userDataScript = fs.readFileSync('user_data.sh', 'utf8');
-
-    const instance = new ec2.Instance(this, 'MLModelInstance', {
-      vpc,
-      instanceType: ec2.InstanceType.of(
-        ec2.InstanceClass.T2,
-        ec2.InstanceSize.MEDIUM
-      ),
-      machineImage: ec2.MachineImage.latestAmazonLinux2023(),
-      securityGroup,
-    });
-
-    instance.addUserData(userDataScript);
-    
     // API Gateway
     const restApi = new RestApi(this, 'cards-api');
 
