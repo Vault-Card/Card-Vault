@@ -1,10 +1,10 @@
 import requests
 
 # Endpoint for your Flask server
-url = "http://ec2-3-20-222-164.us-east-2.compute.amazonaws.com:5000/uploads"
+url = "http://ec2-3-14-27-78.us-east-2.compute.amazonaws.com:5000/uploads"
 
 # Load image as raw bytes
-with open("me.jpeg", "rb") as image_file:
+with open("tdm-281-swamp.jpg", "rb") as image_file:
     image_bytes = image_file.read()
 
 # Send the image as raw binary data
