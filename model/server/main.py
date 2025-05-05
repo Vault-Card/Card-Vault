@@ -6,6 +6,7 @@ from io import BytesIO
 from PIL import Image
 import subprocess
 import json
+import base64
 
 app = Flask(__name__)
 
@@ -68,11 +69,24 @@ def upload_image():
     """
     if request.method == 'POST':
         # Check if data is present in the request
-        if not request.data:
-            logging.error("No data received in the request body")
-            return Response("No data received", status=400)
+        if not request.is_json:
+            logging.error("Request should be JSON")
+            return Response("Request should be JSON", status=400)
 
-        image_data = request.data
+        data = request.get_json()
+        image_base64 = data.get('image_data')
+
+        # Check if 'image_data' is present in the JSON
+        if not image_base64:
+            logging.error("No 'image_data' field found in the JSON")
+            return Response("No 'image_data' provided in JSON", status=400)
+
+        try:
+            # Decode the Base64 string to bytes
+            image_data = base64.b64decode(image_base64)
+        except base64.binascii.Error as e:
+            logging.error(f"Error decoding Base64 string: {e}")
+            return Response("Invalid Base64 encoded data", status=400)
 
         # Validate the image data.  Reject non-image data.
         if not validate_image(image_data):

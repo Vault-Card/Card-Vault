@@ -13,23 +13,31 @@ if (-not (Test-Path $imagePath)) {
 # Read the image file as bytes
 $imageBytes = [IO.File]::ReadAllBytes($imagePath)
 
-# Set the headers.  Content-Type is crucial for the server to know it's an image.
+# Convert the byte array to a Base64 encoded string
+$base64String = [Convert]::ToBase64String($imageBytes)
+
+# Create the JSON payload with the Base64 string
+$body = @{
+    "image_data" = $base64String
+} | ConvertTo-Json
+
+# Set the headers. Content-Type should now be application/json.
 $headers = @{
-    "Content-Type" = "application/octet-stream" #  Generic binary data, or use image/jpeg, image/png, etc. if known.
+    "Content-Type" = "application/json"
 }
 
-# Send the PUT request with the image bytes in the body
+# Send the POST request with the JSON body
 try {
-    $response = Invoke-RestMethod -Uri $url -Method Post -Body $imageBytes -Headers $headers -ErrorAction Stop
+    $response = Invoke-RestMethod -Uri $url -Method Post -Body $body -Headers $headers -ErrorAction Stop
     # If the server returns a 201 Created, the following will be executed
     Write-Host "Image uploaded successfully!"
-    Write-Host "Response:" ($response |ConvertTo-Json -Depth 4) #pretty print
+    Write-Host "Response:" ($response | ConvertTo-Json -Depth 4) #pretty print
 }
 catch {
     # This block will execute if Invoke-RestMethod throws an error (e.g., non-2xx status code)
     Write-Error "Error uploading image: $($_.Exception.Message)"
-    # Output the full response if available.  This can be helpful for debugging server-side issues.
+    # Output the full response if available. This can be helpful for debugging server-side issues.
     if ($_.Exception.Response) {
-        Write-Host "Server Response:" ($_.Exception.Response |ConvertTo-Json -Depth 4)
+        Write-Host "Server Response:" ($_.Exception.Response.Content | ConvertTo-Json -Depth 4)
     }
 }
