@@ -5,6 +5,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import DashboardIcon from '@/components/ui/customIcons/DashboardIcon';
 import CollectionIcon from '@/components/ui/customIcons/CollectionIcon';
 import MarketplaceIcon from '@/components/ui/customIcons/MarketplaceIcon';
+import ScanIcon from '@/components/ui/customIcons/ScanIcon';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -23,6 +24,13 @@ export default function TabLayout() {
                 options = {{
                     title: "Collection",
                     tabBarIcon: ({}) => CollectionIcon()
+                }}
+            />
+            <Tabs.Screen
+                name = "scan"
+                options = {{
+                    title: "Scan",
+                    tabBarIcon: ({}) => ScanIcon()
                 }}
             />
             <Tabs.Screen
