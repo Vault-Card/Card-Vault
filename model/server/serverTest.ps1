@@ -2,7 +2,7 @@
 $url = "http://127.0.0.1:8080/uploads"  # Or your actual URL
 
 # Specify the path to the image file you want to upload
-$imagePath = "C:\Users\kauer\OneDrive\Desktop\Card-Vault\model\server\downloaded_images\15b12c75-1248-4c81-90cf-28e341a885cf.png"  # Replace with the actual path to your image file
+$imagePath = "C:\Users\kauer\OneDrive\Desktop\Card-Vault\model\server\downloaded_images\1df611df-3490-4b07-8034-6da9a0122a81.png"  # Replace with the actual path to your image file
 
 # Check if the image file exists
 if (-not (Test-Path $imagePath)) {
