@@ -27,7 +27,7 @@ A simple server to host the Machine Learning Agent on
 
 ## Requests
 
-`POST` - /uploads - image bytes (image file)
+`POST` - /uploads - 64 base string (image file)
 
 ## Responses
 
@@ -42,3 +42,8 @@ A simple server to host the Machine Learning Agent on
 }
 
 ~~~
+
+## To Retrain Model
+
+1. Have CSV file ready with two 
+

@@ -180,7 +180,7 @@ if __name__ == '__main__':
     logging.info(f"Agent started. Processing image: {image_url}")
 
     model_path = 'image_id_model.pth'  # Path to your saved model
-    csv_path = 'test.csv'  # Path to your CSV file
+    csv_path = 'test_data.csv'  # Path to your CSV file
     # image_url = 'image_file_path'  # Replace with a real image URL for testing
 
     main(model_path, csv_path, image_url)
