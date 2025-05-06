@@ -1,14 +1,21 @@
-import { PaintStyle, rect, Skia } from '@shopify/react-native-skia';
+import { Center } from '@/components/ui/center';
+import { Fab, FabIcon, FabLabel } from '@/components/ui/fab';
+import { HStack } from '@/components/ui/hstack';
+import { AddIcon } from '@/components/ui/icon';
+import { Spinner } from '@/components/ui/spinner';
+import { Text } from '@/components/ui/text';
+import { Toast, ToastTitle, ToastDescription, useToast } from '@/components/ui/toast';
+import { PaintStyle, Skia } from '@shopify/react-native-skia';
 import { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import { ColorConversionCodes, ContourApproximationModes, Mat, MorphShapes, MorphTypes, ObjectType, OpenCV, Rect, RetrievalModes, RotateFlags } from 'react-native-fast-opencv';
+import { StyleSheet, View } from 'react-native';
+import { ColorConversionCodes, ContourApproximationModes, DataTypes, Mat, MorphShapes, MorphTypes, ObjectType, OpenCV, Rect, RetrievalModes, RotateFlags } from 'react-native-fast-opencv';
 import { Camera, DrawableFrame, useCameraDevice, useCameraPermission, useSkiaFrameProcessor } from 'react-native-vision-camera';
-import { useRunOnJS } from 'react-native-worklets-core';
+import { useSharedValue } from 'react-native-worklets-core';
 import { useResizePlugin } from 'vision-camera-resize-plugin';
 
 const paint = Skia.Paint();
 paint.setStyle(PaintStyle.Fill);
-paint.setColor(Skia.Color('red'));
+paint.setColor(Skia.Color('green'));
 paint.setAlphaf(0.3);
 
 function preprocessImage(image: Mat): Mat {
@@ -60,10 +67,10 @@ export default function Scan() {
   const device = useCameraDevice('back');
   const { resize } = useResizePlugin();
 
-  const [cardData, setCardData] = useState<string[] | null>(null);
-  const setRoiData = useRunOnJS((data: string[]) => {
-    setCardData(data);
-  }, []);
+  const toast = useToast();
+  const [toastId, setToastId] = useState<string>('');
+  const rois = useSharedValue<string[] | null>(null);
+  const [scanning, setScanning] = useState<boolean>(false);
 
   useEffect(() => {
     requestPermission();
@@ -84,17 +91,10 @@ export default function Scan() {
     frame.render();
 
     if (rectangles.length > 0) {
-      const rois: string[] = [];
+      rois.value = [];
 
       for (const rect of rectangles) {
         const rectangle = OpenCV.toJSValue(rect);
-
-        const roi = OpenCV.createObject(ObjectType.Mat, rectangle.height, rectangle.width, 3);
-        OpenCV.invoke('crop', source, roi, rect);
-        OpenCV.invoke('rotate', roi, roi, RotateFlags.ROTATE_90_CLOCKWISE);
-
-        const roiData = OpenCV.toJSValue(roi, "png");
-        rois.push(roiData.base64);
 
         frame.drawRect({
           x: rectangle.x / ratio,
@@ -102,16 +102,62 @@ export default function Scan() {
           width: rectangle.width / ratio,
           height: rectangle.height / ratio
         }, paint);
-      }
 
-      setRoiData(rois);
+        const roi = OpenCV.createObject(ObjectType.Mat, rectangle.height, rectangle.width, DataTypes.CV_8U);
+        OpenCV.invoke('crop', source, roi, rect);
+        OpenCV.invoke('rotate', roi, roi, RotateFlags.ROTATE_90_CLOCKWISE);
+
+        const roiData = OpenCV.toJSValue(roi, 'png');
+        rois.value.push(roiData.base64);
+      }
     }
 
     OpenCV.clearBuffers();
   }, []);
 
-  const handleScan = () => {
-    console.log(`Detected ${cardData?.length} card(s).`);
+  const showToast = (title: string, message: string, type: 'error' | 'warning' | 'success' | 'info' | 'muted') => {
+    const newId = Math.random().toString();
+    setToastId(newId);
+
+    toast.show({
+      id: newId.toString(),
+      placement: 'top',
+      duration: 3000,
+      render: ({ id }) => {
+        const uniqueId = `toast-${id}`
+        return (
+          <Toast nativeID={uniqueId} action={type} variant='solid'>
+            <ToastTitle>{title}</ToastTitle>
+            <ToastDescription>{message}</ToastDescription>
+          </Toast>
+        )
+      }
+    });
+  }
+
+  const handleScan = async () => {
+    if (rois.value != null && rois.value.length > 0) {
+      try {
+        setScanning(true);
+        const response = await fetch('http://ec2-3-14-27-78.us-east-2.compute.amazonaws.com:5000/uploads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 'image_data': rois.value[0] })
+        })
+
+        if (response.status == 201) {
+          const data = await response.json();
+          console.log(data);
+        }
+      } catch (error: any) {
+        if (!toast.isActive(toastId)) {
+          showToast('Error', 'Could not scan card.', 'error')
+        }
+      }
+      finally {
+        setScanning(false);
+      }
+    }
   };
 
   if (!hasPermission || device == null) {
@@ -124,12 +170,26 @@ export default function Scan() {
         device={device}
         frameProcessor={frameProcessor}
         isActive={true}
-        enableFpsGraph={true}
         style={StyleSheet.absoluteFill}
       />
-      <View style={styles.overlay}>
-        <Button title={"Scan"} onPress={handleScan} />
-      </View>
+      {
+        scanning &&
+        <Center className='bg-primary-200/80 h-[100%] w-[100%]'>
+          <HStack space='sm'>
+            <Spinner size='large' />
+            <Text className='text-gray-50' size='4xl'>Identifying...</Text>
+          </HStack>
+        </Center>
+      }
+      <Fab
+        size='lg'
+        placement='bottom center'
+        onPress={handleScan}
+        isDisabled={scanning}
+      >
+        <FabIcon as={AddIcon} />
+        <FabLabel>Scan</FabLabel>
+      </Fab>
     </View>
   );
 }
@@ -146,7 +206,3 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
-
-
-
-
