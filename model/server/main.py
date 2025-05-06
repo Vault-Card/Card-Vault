@@ -1,4 +1,3 @@
-from flask import Flask, request, Response
 import os
 import uuid
 import logging
@@ -7,6 +6,7 @@ from PIL import Image
 import subprocess
 import json
 import base64
+from flask import Flask, request, Response
 
 app = Flask(__name__)
 
@@ -103,9 +103,12 @@ def upload_image():
             logging.info(f"Image saved successfully to {filepath}")
             # Construct the URL.  This is important for the client to know where the image is.
             try:
+                # Construct the absolute path to agent.py
+                agent_path = os.path.abspath('agent.py')
+                logging.info(f"Agent script path: {agent_path}")  # Debugging
                 # Use subprocess.run for better control and error handling
                 result = subprocess.run(
-                    ['python', 'agent.py', filepath],  # Pass the filepath
+                    ['python', agent_path, filepath],  # Use the absolute path
                     check=True,  # Raise an exception for non-zero exit codes
                     capture_output=True,  # Capture stdout and stderr
                     text=True,  # Return stdout and stderr as strings
@@ -149,11 +152,10 @@ def upload_image():
 #  * In a production environment, you should add appropriate security measures.
 #  * Consider using a library like Flask-Security or similar.
 #  * Ensure that the upload folder is not directly accessible from the web.  Use a separate
-#     mechanism (e.g., a dedicated route or a different server) to serve the uploaded files.
+#    mechanism (e.g., a dedicated route or a different server) to serve the uploaded files.
 #  * The provided URL is a *relative* URL.  You'll need to prepend your server's base URL
-#     on the client-side to construct the full URL.
+#    on the client-side to construct the full URL.
 
 if __name__ == '__main__':
     #  Run the Flask development server.  For production, use a proper WSGI server (e.g., gunicorn).
-    app.run(debug=True, host='0.0.0.0', port=5000
-    )
+    app.run(debug=True, host='0.0.0.0', port=5000)
