@@ -1,7 +1,7 @@
 import os
 import csv
 
-def create_image_list_csv(image_folder, csv_filename="image_list.csv"):
+def create_image_list_csv(image_folder, csv_filename="filteredTrainingData.csv"):
     """
     Goes through each image in the specified folder, extracts the id and png_uri,
     and writes them to a new CSV file.
@@ -30,5 +30,5 @@ def create_image_list_csv(image_folder, csv_filename="image_list.csv"):
         print(f"No PNG images found in the folder '{image_folder}'.")
 
 if __name__ == "__main__":
-    folder_name = "../downloaded_images"
+    folder_name = "downloaded_images"
     create_image_list_csv(folder_name)
