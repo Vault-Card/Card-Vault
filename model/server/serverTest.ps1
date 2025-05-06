@@ -1,5 +1,5 @@
 # Set the URL of your Flask server's upload endpoint
-$url = "http://ec2-3-14-27-78.us-east-2.compute.amazonaws.com:5000/uploads"  # Or your actual URL
+$url = "http://127.0.0.1:8080/uploads"  # Or your actual URL
 
 # Specify the path to the image file you want to upload
 $imagePath = "C:\Users\kauer\OneDrive\Desktop\Card-Vault\model\server\downloaded_images\35828576-124a-45d6-ad4c-af2926314953.png"  # Replace with the actual path to your image file
