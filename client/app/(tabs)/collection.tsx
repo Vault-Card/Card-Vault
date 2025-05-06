@@ -1,10 +1,16 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import CardList from '@/components/CardList';
+import { Box } from '@/components/ui/box';
+import { useCardList } from '@/contexts/cardListContext';
+import { View } from 'react-native';
 
 export default function Collection() {
+  const { cardList } = useCardList();
+
   return (
     <View>
-      <Text>Collection</Text>
+      <Box className='p-4'>
+        <CardList cards={cardList} clickable={true} />
+      </Box>
     </View>
   );
 }

@@ -1,10 +1,13 @@
+import ScanListDrawer from '@/components/ScanListDrawer';
 import { Center } from '@/components/ui/center';
 import { Fab, FabIcon, FabLabel } from '@/components/ui/fab';
 import { HStack } from '@/components/ui/hstack';
-import { AddIcon } from '@/components/ui/icon';
+import { AddIcon, ArrowLeftIcon } from '@/components/ui/icon';
 import { Spinner } from '@/components/ui/spinner';
 import { Text } from '@/components/ui/text';
-import { Toast, ToastTitle, ToastDescription, useToast } from '@/components/ui/toast';
+import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
+import { useCardList } from '@/contexts/cardListContext';
+import { Card } from '@/types/card';
 import { PaintStyle, Skia } from '@shopify/react-native-skia';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -66,15 +69,21 @@ export default function Scan() {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
   const { resize } = useResizePlugin();
+  const rois = useSharedValue<string[] | null>(null);
+  const scanningRef = useSharedValue<boolean>(false);
 
   const toast = useToast();
+  const { cardList, setCardList } = useCardList();
+  const [scannedCards, setScannedCards] = useState<Card[]>([]);
   const [toastId, setToastId] = useState<string>('');
-  const rois = useSharedValue<string[] | null>(null);
   const [scanning, setScanning] = useState<boolean>(false);
+  const [showScannedCards, setShowScannedCards] = useState<boolean>(false);
 
   useEffect(() => {
     requestPermission();
   }, [requestPermission]);
+
+  useEffect(() => { scanningRef.value = scanning }, [scanning]);
 
   const frameProcessor = useSkiaFrameProcessor((frame: DrawableFrame) => {
     'worklet';
@@ -90,7 +99,7 @@ export default function Scan() {
 
     frame.render();
 
-    if (rectangles.length > 0) {
+    if (rectangles.length > 0 && !scanningRef.value) {
       rois.value = [];
 
       for (const rect of rectangles) {
@@ -139,17 +148,42 @@ export default function Scan() {
     if (rois.value != null && rois.value.length > 0) {
       try {
         setScanning(true);
-        const response = await fetch('http://ec2-3-14-27-78.us-east-2.compute.amazonaws.com:5000/uploads', {
+
+        const ids = [];
+        for (const roi of rois.value) {
+          const modelResponse = await fetch('http://ec2-3-14-27-78.us-east-2.compute.amazonaws.com:5000/uploads', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 'image_data': roi })
+          })
+
+          if (modelResponse.status == 201) {
+            const modelData = await modelResponse.json();
+            ids.push(modelData.id);
+          }
+        }
+
+        const scryfallResponse = await fetch('https://api.scryfall.com/cards/collection', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 'image_data': rois.value[0] })
+          headers: {
+            'Content-Type': 'application/json',
+            'Accepts': '*/*'
+          },
+          body: JSON.stringify({
+            'identifiers': ids.map((id) => ({ 'id': id }))
+          })
         })
 
-        if (response.status == 201) {
-          const data = await response.json();
-          console.log(data);
+        if (scryfallResponse.status == 200) {
+          const scryfallData = await scryfallResponse.json();
+          const newCards: Card[] = scryfallData.data.map((d: any) => ({ scryfallId: d.id, name: d.name, imageUrl: d.image_uris.normal }));
+          const newCardNames = newCards.map((c) => c.name);
+
+          setScannedCards([...scannedCards, ...newCards]);
+          showToast('Cards Scanned', newCardNames.join(', '), 'success');
         }
       } catch (error: any) {
+        console.log(error);
         if (!toast.isActive(toastId)) {
           showToast('Error', 'Could not scan card.', 'error')
         }
@@ -160,12 +194,40 @@ export default function Scan() {
     }
   };
 
+  const handleShowCardList = () => {
+    setShowScannedCards(true);
+  };
+
+  const handleSaveCards = () => {
+    setCardList([...cardList, ...scannedCards]);
+    setScannedCards([]);
+    setShowScannedCards(false);
+
+    if (!toast.isActive(toastId)) {
+      showToast('Saved', 'Cards added to collection.', 'success')
+    }
+  }
+
+  const handleClearCards = () => {
+    setScannedCards([]);
+    setShowScannedCards(false)
+
+    if (!toast.isActive(toastId)) {
+      showToast('Cleared', 'Pending cards removed.', 'info')
+    }
+  }
+
+  const handleCloseCardList = () => {
+    setShowScannedCards(false);
+  };
+
   if (!hasPermission || device == null) {
     return <Text>Card Vault could not access a camera.</Text>
   }
 
   return (
     <View style={styles.container}>
+      <ScanListDrawer scannedCards={scannedCards} isOpen={showScannedCards} onSave={handleSaveCards} onClear={handleClearCards} onClose={handleCloseCardList} />
       <Camera
         device={device}
         frameProcessor={frameProcessor}
@@ -189,6 +251,13 @@ export default function Scan() {
       >
         <FabIcon as={AddIcon} />
         <FabLabel>Scan</FabLabel>
+      </Fab>
+      <Fab
+        size='md'
+        placement='bottom right'
+        onPress={handleShowCardList}
+      >
+        <FabIcon as={ArrowLeftIcon} />
       </Fab>
     </View>
   );
