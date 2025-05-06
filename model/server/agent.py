@@ -13,11 +13,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Load the trained model
 def load_model(model_path, num_classes):
     """Loads the trained PyTorch model.
-
     Args:
         model_path (str): Path to the saved model file (.pth).
         num_classes (int): The number of unique IDs (output classes).
-
     Returns:
         torch.nn.Module: The loaded PyTorch model.
     """
@@ -37,10 +35,8 @@ def load_model(model_path, num_classes):
 # Preprocess the image
 def preprocess_image(image_bytes):
     """Preprocesses the image data for the model.
-
     Args:
         image_bytes (bytes): The raw bytes of the image data.
-
     Returns:
         torch.Tensor: The preprocessed image tensor.  Returns None on error.
     """
@@ -59,12 +55,10 @@ def preprocess_image(image_bytes):
 
 def predict_id(model, image_bytes, id_to_label):
     """Predicts the ID from the given image data.
-
     Args:
         model (torch.nn.Module): The trained PyTorch model.
         image_bytes (bytes): The raw bytes of the image data.
         id_to_label (dict): A mapping from numerical ID to original ID.
-
     Returns:
         str: The predicted ID, or None on error.
     """
@@ -84,14 +78,11 @@ def predict_id(model, image_bytes, id_to_label):
 
 def create_id_to_label_mapping(df):
     """Creates a mapping from numerical ID (0, 1, 2, ...) to the original ID.
-
     This is crucial because your model outputs a numerical index,
     not the original ID.  This mapping is created from your original
     dataframe.
-
     Args:
       df (pd.DataFrame):  The dataframe containing the 'id' column.
-
     Returns:
       dict: A dictionary mapping numerical ID to original ID.
     """
@@ -101,10 +92,8 @@ def create_id_to_label_mapping(df):
 
 def load_data(csv_path):
   """Loads the data and returns the dataframe.
-
   Args:
     csv_path (str): Path to the CSV file.
-
   Returns:
     pd.DataFrame: The dataframe.
   """
@@ -113,10 +102,8 @@ def load_data(csv_path):
 
 def get_image_bytes_from_url(url):
     """Downloads the image from the URL and returns the image bytes.
-
     Args:
         url (str): The URL of the image.
-
     Returns:
         bytes: The image bytes, or None on error.
     """
@@ -137,11 +124,10 @@ def get_image_bytes_from_url(url):
     except:
         print(f"Error handling image at {url}")
         return None
-    
+
 
 def main(model_path, csv_path, image_path):
     """Main function to run the agent.
-
     Args:
         model_path (str): Path to the saved model file (.pth).
         csv_path (str): Path to the CSV file containing the data.
@@ -171,7 +157,7 @@ def main(model_path, csv_path, image_path):
         print("Failed to predict ID.")
 
 if __name__ == '__main__':
-    
+
     if len(sys.argv) != 2:
         logging.error("Usage: agent.py <image_file_path>")
         sys.exit(1)
@@ -181,7 +167,7 @@ if __name__ == '__main__':
 
     model_path = 'image_id_model.pth'  # Path to your saved model
     csv_path = 'test_data.csv'  # Path to your CSV file
-    image_url = 'image_file_path'  # Replace with a real image URL for testing
+    # image_url = 'image_file_path'  # Replace with a real image URL for testing
 
     main(model_path, csv_path, image_url)
-    
+
