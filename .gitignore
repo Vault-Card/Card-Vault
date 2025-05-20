@@ -7,3 +7,4 @@ model/dataTools/test.csv
 model/downloaded_images/
 model/test.jpg
 ml-flask-server.pem
+model/server/testImages/
