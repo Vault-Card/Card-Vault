@@ -8,3 +8,6 @@ model/downloaded_images/
 model/test.jpg
 ml-flask-server.pem
 model/server/testImages/
+client/android
+client/ios
+client/web-build

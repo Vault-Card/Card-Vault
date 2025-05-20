@@ -1,3 +1,9 @@
+import { Amplify } from 'aws-amplify';
+import awsconfig from '../aws-exports';
+Amplify.configure(awsconfig);
+
+import { Authenticator } from '@aws-amplify/ui-react-native';
+// Removed unused import as AuthenticatorContextType is not exported
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { CardListContextProvider } from '@/contexts/cardListContext';
 import "@/global.css";
@@ -8,9 +14,10 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import type { ReactNode } from 'react';
+
 import 'react-native-reanimated';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -30,16 +37,22 @@ export default function RootLayout() {
   }
 
   return (
-    <GluestackUIProvider mode="light">
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <CardListContextProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
-        </CardListContextProvider>
-      </ThemeProvider>
-    </GluestackUIProvider>
+    <Authenticator.Provider>
+      <Authenticator>
+        {(({ signOut, user }: { signOut: () => void; user: any }) => (
+          <GluestackUIProvider mode="light">
+            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+              <CardListContextProvider>
+                <Stack>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <StatusBar style="auto" />
+              </CardListContextProvider>
+            </ThemeProvider>
+          </GluestackUIProvider>
+        )) as unknown as ReactNode}
+      </Authenticator>
+    </Authenticator.Provider>
   );
 }

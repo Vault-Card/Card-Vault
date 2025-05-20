@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-cardvault1-dev-d7ca2-authRole",
+      "UnauthRoleArn": "arn:aws:iam::263167772103:role/amplify-cardvault1-dev-d7ca2-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::263167772103:role/amplify-cardvault1-dev-d7ca2-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-cardvault1-dev-d7ca2-deployment",
+      "UnauthRoleName": "amplify-cardvault1-dev-d7ca2-unauthRole",
+      "StackName": "amplify-cardvault1-dev-d7ca2",
+      "StackId": "arn:aws:cloudformation:us-west-2:263167772103:stack/amplify-cardvault1-dev-d7ca2/af924920-35c3-11f0-b264-026eb7e1901d",
+      "AmplifyAppId": "d3v2f6fy747kys"
+    },
+    "categories": {
+      "auth": {
+        "cardvault1ab10cc3d": {}
+      }
+    }
+  }
+}
