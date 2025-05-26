@@ -6,7 +6,6 @@ import { Authenticator } from '@aws-amplify/ui-react-native';
 // Removed unused import as AuthenticatorContextType is not exported
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { CardListContextProvider } from '@/contexts/cardListContext';
-import "@/global.css";
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';

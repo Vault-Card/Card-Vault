@@ -1,5 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@import "@aws-amplify/ui-react/styles.css";
 
+/* @tailwind base;
+@tailwind components;
+@import "@aws-amplify/ui-react/styles.css";
+@tailwind utilities; */
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "@aws-amplify/ui-react/styles.css";
+@import "tailwindcss/utilities";
+
+.amplify-button--primary {
+  background-color: #403b66 !important;
+}
