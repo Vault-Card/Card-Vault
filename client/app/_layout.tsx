@@ -3,7 +3,6 @@ import awsconfig from '../aws-exports';
 Amplify.configure(awsconfig);
 
 import { Authenticator } from '@aws-amplify/ui-react-native';
-// Removed unused import as AuthenticatorContextType is not exported
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { CardListContextProvider } from '@/contexts/cardListContext';
 import "@/global.css";

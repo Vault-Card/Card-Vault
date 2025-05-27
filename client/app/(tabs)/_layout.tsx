@@ -25,13 +25,13 @@ export default function TabLayout() {
 					tabBarIcon: ({ }) => CollectionIcon()
 				}}
 			/>
-			<Tabs.Screen
+			{/* <Tabs.Screen
 				name="scan"
 				options={{
 					title: "Scan",
 					tabBarIcon: ({ }) => ScanIcon()
 				}}
-			/>
+			/> */}
 			<Tabs.Screen
 				name="marketplace"
 				options={{
