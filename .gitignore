@@ -9,3 +9,6 @@ model/test.jpg
 ml-flask-server.pem
 model/server/testImages/
 model/server/testImages/
+model/dataTools/english-png.csv
+model/dataTools/englishCards.csv
+model/dataTools/englishIDImages.csv
