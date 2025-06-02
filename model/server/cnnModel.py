@@ -79,7 +79,7 @@ if __name__ == '__main__':
     dataset = ImageIdDataset(df, transform=transform)
 
     # Create the dataloader
-    dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=128, shuffle=True)
 
     # Load a pre-trained CNN (e.g., ResNet-18) and modify the classifier
     model = models.resnet18(pretrained=True)

@@ -38,6 +38,6 @@ def extract_png_uri(input_csv, output_csv):
     print(f"Successfully extracted PNG URIs and saved to '{output_csv}'")
 
 if __name__ == "__main__":
-    input_file = 'all-cards.csv'
-    output_file = 'all-cards-png.csv'
+    input_file = 'englishCards.csv'
+    output_file = 'english-png.csv'
     extract_png_uri(input_file, output_file)
