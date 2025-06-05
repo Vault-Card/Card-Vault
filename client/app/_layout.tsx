@@ -1,14 +1,19 @@
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { CardListContextProvider } from '@/contexts/cardListContext';
 import "@/global.css";
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { Authenticator } from "@aws-amplify/ui-react-native";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { Amplify } from "aws-amplify";
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
+import "react-native-reanimated";
+import outputs from "../amplify_outputs.json";
+
+Amplify.configure(outputs);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -16,7 +21,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
   useEffect(() => {
@@ -31,14 +36,18 @@ export default function RootLayout() {
 
   return (
     <GluestackUIProvider mode="light">
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <CardListContextProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
-        </CardListContextProvider>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Authenticator.Provider>
+          <Authenticator>
+            <CardListContextProvider>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="auto" />
+            </CardListContextProvider>
+          </Authenticator>
+        </Authenticator.Provider>
       </ThemeProvider>
     </GluestackUIProvider>
   );
