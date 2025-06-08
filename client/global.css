@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 .amplify-button--primary {
-  background-color: #5bc0e7;
-  color: #282c2e;
+  background-color: #282c2e;
+  color: #5bc0e7;
 }
