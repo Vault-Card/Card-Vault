@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.amplify-button--primary {
+  background-color: #5bc0e7;
+  color: #282c2e;
+}

@@ -27,6 +27,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
         <data android:scheme="com.kauercurtis.test"/>
+        <data android:scheme="exp+card-vault"/>
       </intent-filter>
     </activity>
   </application>
