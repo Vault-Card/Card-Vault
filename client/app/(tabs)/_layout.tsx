@@ -2,7 +2,6 @@ import CollectionIcon from '@/components/ui/customIcons/CollectionIcon';
 import DashboardIcon from '@/components/ui/customIcons/DashboardIcon';
 import MarketplaceIcon from '@/components/ui/customIcons/MarketplaceIcon';
 import ScanIcon from '@/components/ui/customIcons/ScanIcon';
-// import logoutIcon from '@/components/ui/customIcons/LogoutIcon';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -11,11 +10,12 @@ export default function TabLayout() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<Tabs >
+		<Tabs>
 			<Tabs.Screen
 				name="index"
 				options={{
 					title: "Dashboard",
+					tabBarPosition: "top",
 					tabBarIcon: ({ size }) => DashboardIcon()
 				}}
 			/>
@@ -23,6 +23,7 @@ export default function TabLayout() {
 				name="collection"
 				options={{
 					title: "Collection",
+					tabBarPosition: "top",
 					tabBarIcon: ({ }) => CollectionIcon()
 				}}
 			/>
@@ -30,6 +31,7 @@ export default function TabLayout() {
 				name="scan"
 				options={{
 					title: "Scan",
+					tabBarPosition: "top",
 					tabBarIcon: ({ }) => ScanIcon()
 				}}
 			/>
@@ -37,6 +39,7 @@ export default function TabLayout() {
 				name="marketplace"
 				options={{
 					title: "Marketplace",
+					tabBarPosition: "top",
 					tabBarIcon: ({ }) => MarketplaceIcon()
 				}}
 			/>
@@ -44,6 +47,7 @@ export default function TabLayout() {
 				name="signout"
 				options={{
 					title: "Sign Out",
+					tabBarPosition: "top",
 					tabBarIcon: ({ }) => MarketplaceIcon()
 				}}
 			/>
