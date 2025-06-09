@@ -2,6 +2,7 @@ import CollectionIcon from '@/components/ui/customIcons/CollectionIcon';
 import DashboardIcon from '@/components/ui/customIcons/DashboardIcon';
 import MarketplaceIcon from '@/components/ui/customIcons/MarketplaceIcon';
 import ScanIcon from '@/components/ui/customIcons/ScanIcon';
+// import logoutIcon from '@/components/ui/customIcons/LogoutIcon';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -36,6 +37,13 @@ export default function TabLayout() {
 				name="marketplace"
 				options={{
 					title: "Marketplace",
+					tabBarIcon: ({ }) => MarketplaceIcon()
+				}}
+			/>
+			<Tabs.Screen
+				name="signout"
+				options={{
+					title: "Sign Out",
 					tabBarIcon: ({ }) => MarketplaceIcon()
 				}}
 			/>
