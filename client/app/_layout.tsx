@@ -2,7 +2,7 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { CardListContextProvider } from '@/contexts/cardListContext';
 import "@/global.css";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Authenticator } from "@aws-amplify/ui-react-native";
+import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Amplify } from "aws-amplify";
 import { useFonts } from "expo-font";
@@ -11,7 +11,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import outputs from "../amplify_outputs.json";
+import outputs from "../amplify_outputs";
 
 Amplify.configure(outputs);
 
@@ -38,7 +38,18 @@ export default function RootLayout() {
     <GluestackUIProvider mode="light">
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Authenticator.Provider>
-          <Authenticator>
+          <Authenticator
+                 Container={(props) => (
+          // reuse default `Container` and apply custom background
+          <>
+            <Authenticator.Container
+              {...props}
+              style={{ backgroundColor: "#282c2e",
+               }}
+            />
+          </>
+        )}
+          >
             <CardListContextProvider>
               <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
