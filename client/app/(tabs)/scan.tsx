@@ -16,10 +16,26 @@ import { Camera, DrawableFrame, useCameraDevice, useCameraPermission, useSkiaFra
 import { useSharedValue } from 'react-native-worklets-core';
 import { useResizePlugin } from 'vision-camera-resize-plugin';
 
+const IOU_THRESHOLD = 0.3;
+const RECTANGLE_HOLD_DURATION = 200;
+
 const paint = Skia.Paint();
 paint.setStyle(PaintStyle.Fill);
-paint.setColor(Skia.Color('green'));
+paint.setColor(Skia.Color('#5bc0e7'));
 paint.setAlphaf(0.3);
+
+interface JSRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+interface TrackedRectangle {
+  openCvRect: Rect;
+  rectangle: JSRect;
+  lastSeen: number;
+};
 
 function preprocessImage(image: Mat): Mat {
   'worklet';
@@ -65,10 +81,61 @@ function findRectangles(image: Mat) {
   return rectangles;
 }
 
+function iou(rectA: JSRect, rectB: JSRect) {
+  'worklet';
+
+  const x1 = Math.max(rectA.x, rectB.x);
+  const y1 = Math.max(rectA.y, rectB.y);
+  const x2 = Math.min(rectA.x + rectA.width, rectB.x + rectB.width);
+  const y2 = Math.min(rectA.y + rectA.height, rectB.y + rectB.height);
+  const intersection = Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+
+  const areaFirst = rectA.width * rectA.height;
+  const areaSecond = rectB.width * rectB.height;
+  const union = areaFirst + areaSecond - intersection;
+
+  return intersection / union;
+}
+
+function updateTrackedRectangles(trackedRectangles: TrackedRectangle[], newRectangles: Rect[], frameTimeStamp: number) {
+  'worklet';
+
+  const updated = [...trackedRectangles];
+
+  for (const newRect of newRectangles) {
+    const newJsRect = OpenCV.toJSValue(newRect);
+
+    let bestIou = 0;
+    let bestMatch: TrackedRectangle | null = null;
+    for (const tracked of updated) {
+      const overlap = iou(tracked.rectangle, newJsRect)
+      if (overlap > IOU_THRESHOLD && overlap > bestIou) {
+        bestIou = overlap;
+        bestMatch = tracked;
+      }
+    }
+
+    if (bestMatch) {
+      bestMatch.openCvRect = newRect;
+      bestMatch.rectangle = newJsRect;
+      bestMatch.lastSeen = frameTimeStamp;
+    } else {
+      updated.push({
+        openCvRect: newRect,
+        rectangle: newJsRect,
+        lastSeen: frameTimeStamp,
+      })
+    }
+  }
+
+  return updated.filter((r) => frameTimeStamp - r.lastSeen < RECTANGLE_HOLD_DURATION);
+}
+
 export default function Scan() {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
   const { resize } = useResizePlugin();
+  const trackedRectangles = useSharedValue<TrackedRectangle[]>([]);
   const rois = useSharedValue<string[] | null>(null);
   const scanningRef = useSharedValue<boolean>(false);
 
@@ -99,21 +166,23 @@ export default function Scan() {
 
     frame.render();
 
-    if (rectangles.length > 0 && !scanningRef.value) {
-      rois.value = [];
+    if (!scanningRef.value) {
+      const frameTimeStamp = Date.now();
+      trackedRectangles.value = updateTrackedRectangles(trackedRectangles.value, rectangles, frameTimeStamp);
 
-      for (const rect of rectangles) {
-        const rectangle = OpenCV.toJSValue(rect);
-
+      for (const tracked of trackedRectangles.value) {
+        // Draw overlay on frame
         frame.drawRect({
-          x: rectangle.x / ratio,
-          y: rectangle.y / ratio,
-          width: rectangle.width / ratio,
-          height: rectangle.height / ratio
+          x: tracked.rectangle.x / ratio,
+          y: tracked.rectangle.y / ratio,
+          width: tracked.rectangle.width / ratio,
+          height: tracked.rectangle.height / ratio
         }, paint);
 
-        const roi = OpenCV.createObject(ObjectType.Mat, rectangle.height, rectangle.width, DataTypes.CV_8U);
-        OpenCV.invoke('crop', source, roi, rect);
+        // Save detected regions of interest
+        rois.value = [];
+        const roi = OpenCV.createObject(ObjectType.Mat, tracked.rectangle.height, tracked.rectangle.width, DataTypes.CV_8U);
+        OpenCV.invoke('crop', source, roi, tracked.openCvRect);
         OpenCV.invoke('rotate', roi, roi, RotateFlags.ROTATE_90_CLOCKWISE);
 
         const roiData = OpenCV.toJSValue(roi, 'png');
@@ -121,7 +190,7 @@ export default function Scan() {
       }
     }
 
-    OpenCV.clearBuffers();
+    OpenCV.clearBuffers(trackedRectangles.value.map((t) => t.openCvRect.id));
   }, []);
 
   const showToast = (title: string, message: string, type: 'error' | 'warning' | 'success' | 'info' | 'muted') => {
