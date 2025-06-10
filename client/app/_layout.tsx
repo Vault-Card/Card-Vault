@@ -12,6 +12,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import outputs from "../amplify_outputs";
+import Constants from 'expo-constants';
 
 Amplify.configure(outputs);
 
@@ -35,7 +36,7 @@ export default function RootLayout() {
   }
 
   return (
-    <GluestackUIProvider mode="light">
+    <GluestackUIProvider mode="dark">
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Authenticator.Provider>
           <Authenticator
@@ -55,7 +56,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="+not-found" />
               </Stack>
-              <StatusBar style="auto" />
+              <StatusBar style="auto" translucent={false} backgroundColor={'#282c2e'}/>
             </CardListContextProvider>
           </Authenticator>
         </Authenticator.Provider>
