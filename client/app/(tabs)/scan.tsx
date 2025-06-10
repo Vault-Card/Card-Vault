@@ -245,7 +245,16 @@ export default function Scan() {
 
         if (scryfallResponse.status == 200) {
           const scryfallData = await scryfallResponse.json();
-          const newCards: Card[] = scryfallData.data.map((d: any) => ({ scryfallId: d.id, name: d.name, imageUrl: d.image_uris.normal, set: d.set_name, price: d.prices['usd'], amount: 1 }));
+          const newCards: Card[] = scryfallData.data.map((d: any) => ({
+            scryfallId: d.id,
+            imageUrl: d.image_uris.png,
+            name: d.name,
+            set: d.set_name,
+            text: d.oracle_text,
+            type: d.type_line,
+            price: d.prices['usd'],
+            amount: 1,
+          }));
           const newCardNames = newCards.map((c) => c.name);
 
           setScannedCards([...scannedCards, ...newCards]);
