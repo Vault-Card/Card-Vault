@@ -170,6 +170,8 @@ export default function Scan() {
       const frameTimeStamp = Date.now();
       trackedRectangles.value = updateTrackedRectangles(trackedRectangles.value, rectangles, frameTimeStamp);
 
+      rois.value = [];
+
       for (const tracked of trackedRectangles.value) {
         // Draw overlay on frame
         frame.drawRect({
@@ -180,7 +182,6 @@ export default function Scan() {
         }, paint);
 
         // Save detected regions of interest
-        rois.value = [];
         const roi = OpenCV.createObject(ObjectType.Mat, tracked.rectangle.height, tracked.rectangle.width, DataTypes.CV_8U);
         OpenCV.invoke('crop', source, roi, tracked.openCvRect);
         OpenCV.invoke('rotate', roi, roi, RotateFlags.ROTATE_90_CLOCKWISE);
