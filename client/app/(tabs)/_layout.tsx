@@ -1,8 +1,6 @@
-import CollectionIcon from '@/components/ui/customIcons/CollectionIcon';
-import DashboardIcon from '@/components/ui/customIcons/DashboardIcon';
-import MarketplaceIcon from '@/components/ui/customIcons/MarketplaceIcon';
-import ScanIcon from '@/components/ui/customIcons/ScanIcon';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import Entypo from '@expo/vector-icons/Entypo';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
@@ -14,17 +12,9 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="index"
 				options={{
-					title: "Dashboard",
-					tabBarPosition: "top",
-					tabBarIcon: ({ size }) => DashboardIcon()
-				}}
-			/>
-			<Tabs.Screen
-				name="collection"
-				options={{
 					title: "Collection",
 					tabBarPosition: "top",
-					tabBarIcon: ({ }) => CollectionIcon()
+					tabBarIcon: ({ }) => <MaterialIcons name="folder" size={24} color="white" />
 				}}
 			/>
 			<Tabs.Screen
@@ -32,7 +22,7 @@ export default function TabLayout() {
 				options={{
 					title: "Scan",
 					tabBarPosition: "top",
-					tabBarIcon: ({ }) => ScanIcon()
+					tabBarIcon: ({ }) => <MaterialIcons name="camera-alt" size={24} color="white" />
 				}}
 			/>
 			<Tabs.Screen
@@ -40,7 +30,7 @@ export default function TabLayout() {
 				options={{
 					title: "Marketplace",
 					tabBarPosition: "top",
-					tabBarIcon: ({ }) => MarketplaceIcon()
+					tabBarIcon: ({ }) => <Entypo name="shop" size={24} color="white" />
 				}}
 			/>
 			<Tabs.Screen
@@ -48,7 +38,7 @@ export default function TabLayout() {
 				options={{
 					title: "Sign Out",
 					tabBarPosition: "top",
-					tabBarIcon: ({ }) => MarketplaceIcon()
+					tabBarIcon: ({ }) => <MaterialIcons name="logout" size={24} color="white" />
 				}}
 			/>
 		</Tabs>
