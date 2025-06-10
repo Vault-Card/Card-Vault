@@ -220,7 +220,7 @@ export default function Scan() {
 
         const ids = [];
         for (const roi of rois.value) {
-          const modelResponse = await fetch('http://ec2-3-14-27-78.us-east-2.compute.amazonaws.com:5000/uploads', {
+          const modelResponse = await fetch('http://ec2-18-222-215-1.us-east-2.compute.amazonaws.com:5000/uploads', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 'image_data': roi })
