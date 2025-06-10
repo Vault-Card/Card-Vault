@@ -25,7 +25,7 @@ def load_model(model_path, num_classes):
     #  For this example, I'm assuming it's a ResNet-18, but YOU MUST
     #  REPLACE THIS with your actual model definition.
     import torchvision.models as models
-    model = models.resnet18(pretrained=False) # Important: pretrained=False
+    model = models.resnet34(pretrained=False) # Important: pretrained=False
     num_ftrs = model.fc.in_features
     model.fc = torch.nn.Linear(num_ftrs, num_classes).to(device)  # Move to the correct device
     model.load_state_dict(torch.load(model_path, map_location=device)) # Load state dict and map to device
@@ -47,7 +47,7 @@ def preprocess_image(image_bytes):
         return None
 
     transform = transforms.Compose([
-        transforms.Resize((224, 224)),
+        transforms.Resize((313, 224)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     logging.info(f"Agent started. Processing image: {image_url}")
 
     model_path = 'image_id_model.pth'  # Path to your saved model
-    csv_path = 'test_data.csv'  # Path to your CSV file
+    csv_path = 'filteredTrainingData.csv'  # Path to your CSV file
     # image_url = 'image_file_path'  # Replace with a real image URL for testing
 
     main(model_path, csv_path, image_url)
