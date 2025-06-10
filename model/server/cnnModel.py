@@ -66,7 +66,7 @@ def train_model(dataloader, model, criterion, optimizer, num_epochs):
 
 if __name__ == '__main__':
     # Load your DataFrame
-    df = pd.read_csv('test_data.csv') # Replace 'your_data.csv'
+    df = pd.read_csv('filteredTrainingData.csv') # Replace 'your_data.csv'
 
     # Define image transformations
     transform = transforms.Compose([
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     dataloader = DataLoader(dataset, batch_size=128, shuffle=True)
 
     # Load a pre-trained CNN (e.g., ResNet-18) and modify the classifier
-    model = models.resnet18(pretrained=True)
+    model = models.resnet34(pretrained=True)
     num_ftrs = model.fc.in_features
     num_classes = len(dataset.unique_ids) # Number of unique IDs
     model.fc = nn.Linear(num_ftrs, num_classes)
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
     # Train the model
-    num_epochs = 5 # Adjust as needed
+    num_epochs = 10 # Adjust as needed
     train_model(dataloader, model, criterion, optimizer, num_epochs)
 
     # Save the trained model

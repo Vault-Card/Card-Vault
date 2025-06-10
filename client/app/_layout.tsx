@@ -44,7 +44,7 @@ export default function RootLayout() {
           <>
             <Authenticator.Container
               {...props}
-              style={{ backgroundColor: "#282c2e",
+              style={{ backgroundColor: "#5BC0E7",
                }}
             />
           </>

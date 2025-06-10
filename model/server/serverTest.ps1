@@ -1,8 +1,8 @@
 # Set the URL of your Flask server's upload endpoint
-$url = "http://127.0.0.1:8080/uploads"  # Or your actual URL
+$url = "http://127.0.0.1:5000/uploads"  # Or your actual URL
 
 # Specify the path to the image file you want to upload
-$imagePath = "C:\Users\kauer\OneDrive\Desktop\Card-Vault\model\server\downloaded_images\35828576-124a-45d6-ad4c-af2926314953.png"  # Replace with the actual path to your image file
+$imagePath = "C:\dev\Card-Vault\model\server\testImages\s-l16005copy.jpg"  # Replace with the actual path to your image file
 
 # Check if the image file exists
 if (-not (Test-Path $imagePath)) {
