@@ -267,7 +267,7 @@ export default function Marketplace() {
   }
   
   const styles = StyleSheet.create({
-    screen: { flex: 1, backgroundColor: "#f6f8fa" },
+    screen: { flex: 1, backgroundColor: "#282c2e" },
     searchBar: {
       height: 44,
       borderRadius: 10,
@@ -285,12 +285,12 @@ export default function Marketplace() {
     },
     emptyText: {
       fontSize: 18,
-      color: "#888",
+      color: "#5bc0e7",
       fontStyle: "italic",
       marginTop: 24,
     },
     cardContainer: {
-      backgroundColor: "#fff",
+      backgroundColor: "#474747",
       borderRadius: 16,
       padding: 16,
       marginBottom: 18,
@@ -306,10 +306,10 @@ export default function Marketplace() {
       borderRadius: 8,
       backgroundColor: "#ddd",
     },
-    cardTitle: { fontWeight: "bold", fontSize: 16, marginBottom: 4 },
-    cardRarity: { color: "#888", marginBottom: 4 },
-    cardPrice: { color: "#348e91", fontWeight: "600" },
-    cardListings: { color: "#666", fontSize: 12 },
+    cardTitle: { fontWeight: "bold", fontSize: 16, marginBottom: 4, color: "#feffc6"},
+    cardRarity: { color: "#5bc0e7", marginBottom: 4 },
+    cardPrice: { color: "#5bc0e7", fontWeight: "600" },
+    cardListings: { color: "#5bc0e7", fontSize: 12 },
     // Modal styles
     modalOverlay: {
       flex: 1,
