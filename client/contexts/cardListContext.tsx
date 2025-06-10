@@ -21,13 +21,15 @@ export const CardListContextProvider = ({ children }: { children: React.ReactNod
 	const [cardList, setCardList] = useState<Card[]>([]);
 
 	// a small surprise
-		useEffect(() => {
+	useEffect(() => {
 		setCardList([
 			{
 				scryfallId: '2d1dfd96-8e17-4ba8-b786-a5cc0ae2ff2d',
-				name: 'Siege Wurm',
-				imageUrl: 'https://cards.scryfall.io/small/front/2/d/2d1dfd96-8e17-4ba8-b786-a5cc0ae2ff2d.jpg?1572893446',
+				imageUrl: 'https://cards.scryfall.io/png/front/2/d/2d1dfd96-8e17-4ba8-b786-a5cc0ae2ff2d.png?1572893446',
 				set: 'Guilds of Ravnica',
+				name: 'Siege Wurm',
+				type: 'Creature — Wurm',
+				text: 'Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature\'s color.)\nTrample',
 				price: '0.04',
 				amount: 198
 			},

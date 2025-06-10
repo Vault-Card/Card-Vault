@@ -1,7 +1,10 @@
 export type Card = {
 	scryfallId: string
-	name: string
 	imageUrl: string
-	set: string
+	name: string
 	price: string
+	text: string
+	type: string
+	set: string
+	amount: number
 }
