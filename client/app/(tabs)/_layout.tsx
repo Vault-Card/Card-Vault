@@ -10,11 +10,12 @@ export default function TabLayout() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<Tabs >
+		<Tabs>
 			<Tabs.Screen
 				name="index"
 				options={{
 					title: "Dashboard",
+					tabBarPosition: "top",
 					tabBarIcon: ({ size }) => DashboardIcon()
 				}}
 			/>
@@ -22,6 +23,7 @@ export default function TabLayout() {
 				name="collection"
 				options={{
 					title: "Collection",
+					tabBarPosition: "top",
 					tabBarIcon: ({ }) => CollectionIcon()
 				}}
 			/>
@@ -29,6 +31,7 @@ export default function TabLayout() {
 				name="scan"
 				options={{
 					title: "Scan",
+					tabBarPosition: "top",
 					tabBarIcon: ({ }) => ScanIcon()
 				}}
 			/>
@@ -36,6 +39,15 @@ export default function TabLayout() {
 				name="marketplace"
 				options={{
 					title: "Marketplace",
+					tabBarPosition: "top",
+					tabBarIcon: ({ }) => MarketplaceIcon()
+				}}
+			/>
+			<Tabs.Screen
+				name="signout"
+				options={{
+					title: "Sign Out",
+					tabBarPosition: "top",
 					tabBarIcon: ({ }) => MarketplaceIcon()
 				}}
 			/>
