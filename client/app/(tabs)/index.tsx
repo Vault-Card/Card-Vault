@@ -20,8 +20,8 @@ export default function Collection() {
           </View>
 
           {/* Table Rows */}
-          {cardList.map((card) => (
-            <Link href={`/card/${card.scryfallId}`} key={card.scryfallId}>
+          {cardList.map((card, i) => (
+            <Link href={`/card/${card.scryfallId}`} key={i}>
               <View style={styles.row}>
                 <Text style={styles.cell}>{card.name}</Text>
                 <Text style={styles.cell}>{card.set}</Text>

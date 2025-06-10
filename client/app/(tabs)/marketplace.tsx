@@ -145,6 +145,8 @@ export default function Marketplace() {
     const [selectedCard, setSelectedCard] = useState(null);
     const [search, setSearch] = useState("");
     
+    const formatter = Intl.NumberFormat('en-US',{ style: 'currency', currency: 'USD'});
+    
     // Only show cards that match the search text
     const filteredData = mockCardData.filter(card =>
       card.name.toLowerCase().includes(search.trim().toLowerCase())
@@ -164,7 +166,7 @@ export default function Marketplace() {
       <View style={styles.listingRow}>
         <Text style={styles.listingCell}>{item.condition}</Text>
         <Text style={styles.listingCell}>{item.username}</Text>
-        <Text style={styles.listingCell}>${item.price}</Text>
+        <Text style={styles.listingCell}>{formatter.format(item.price)}</Text>
         <Text style={styles.listingCell}>x{item.quantity}</Text>
       </View>
     );
@@ -177,7 +179,7 @@ export default function Marketplace() {
             <View style={{ marginLeft: 12, flex: 1 }}>
               <Text style={styles.cardTitle}>{item.name}</Text>
               <Text style={styles.cardRarity}>{item.rarity}</Text>
-              <Text style={styles.cardPrice}>Avg: ${item.averagePrice}</Text>
+              <Text style={styles.cardPrice}>Avg: {formatter.format(item.averagePrice)}</Text>
               <Text style={styles.cardListings}>Listings: {item.numberOfListings}</Text>
             </View>
           </View>
@@ -230,7 +232,7 @@ export default function Marketplace() {
                   <Text style={styles.modalTitle}>{selectedCard.name}</Text>
                   <Text style={styles.modalRarity}>{selectedCard.rarity}</Text>
                   <Text style={styles.modalListings}>
-                    Avg: ${selectedCard.averagePrice} | Listings: {selectedCard.numberOfListings}
+                    Avg: {formatter.format(selectedCard.averagePrice)} | Listings: {selectedCard.numberOfListings}
                   </Text>
                   <View style={styles.listingHeader}>
                     <Text style={styles.listingCell}>Condition</Text>
