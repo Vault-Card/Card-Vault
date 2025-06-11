@@ -70,4 +70,6 @@ npm run android
 
 # iOS
 npm run ios
+and or
+npx expo run
 ```
