@@ -1,17 +1,22 @@
 # Release Notes
-5.6.25
+6.10.25
 
-## Initial Release - Multicard Scanning MVP
+## Initial Release - Multicard Scanning, Marketplace, Collection Management
 
 ### Overview
-Implemented basic multicard scanning functionality.
+Implemented MTG Card Marketplace, Collection Management, Multicard Scanning, Style/UI Changes, Auth.
 
 ### Technical Summary
-- Mobile frontend uses OpenCV to detect rectangles (cards).
-- Captured image is sent to a Flask server running on AWS EC2.
-- Flask server uses a PyTorch CNN model to predict card identities.
+- Card Vault now has user authentication by way of AWS Cognito/Amplify. You can create an account to sign in to manage your personal collections. 
+- Multicard Scanning now allows you to save the scanned cards to a personal collection (new tab and style).
+- Flask server uses a newly trained PyTorch CNN model to predict multiple card identities.
 - Server returns Scryfall IDs to the client.
 - Client fetches card images from Scryfall using these IDs.
+- Client side handles taking this card information -> getting relevant info from Scryfall -> adding to personal user collection.
+- User Collections lets you see which cards, the quantity, price, photo, and description in your personal library.
+- Marketplace allows you to browse cards listed by other players, their prices, the quantity, and other relevant information.
+  
 
 ### Next Steps
-- Move prediction trigger to a backend Lambda function decoupled from the Flask server and host our model & server on Sagemaker/serverless.
+- Add real time pricing in marketplace and collections
+
