@@ -1,81 +1,73 @@
-# Card-Vault
-TCG Platform
+# Card Vault
+Welcome to Card Vault, the ultimate TCG platform. The following steps will walk you through setting up and running the project.
 
 ## Dependencies
+### 1. Get an emulator for your OS/device:
+   - [Android Studio](https://docs.expo.dev/workflow/android-studio-emulator/)
+   - [Xcode](https://docs.expo.dev/workflow/ios-simulator/) (Mac only)
 
-`Nodejs` - https://nodejs.org/en/download
 
-`npm` - npm install -g npm
+### 2. Get npm:
+Using a version manager (recommended):
+   - Linux/Mac: https://github.com/nvm-sh/nvm
+   - Windows: https://github.com/coreybutler/nvm-windows
 
-`Node Version Manager (nvm)` 
-  - Linux: https://github.com/nvm-sh/nvm
-  - Windows: https://github.com/coreybutler/nvm-windows
+Or manually installing:  
+Nodejs - https://nodejs.org/en/download  
+npm - `npm install -g npm`
 
-`Android Studio` - https://docs.expo.dev/workflow/android-studio-emulator/
+### 3. Get cocao pods (Mac only):
+https://guides.cocoapods.org/using/getting-started.html
 
-## To Run
-
-`Have Your Device Running`
-
-`Change Into client Directory`
-
-`npm install`
-
-`npx expo start`
-
-## Expo Documentation
-
-https://docs.expo.dev/
-
-## Default Project README contents
-
-# Welcome to your Expo app 👋
-
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Setup project
+Run the following commands to setup the project:
 
 ```bash
-npm run reset-project
+# Make sure you're in the client directory
+cd ./client
+
+# Install npm packages:
+npm install
+
+# Prebuild native Android and iOS projects:
+npx expo prebuild
+
+# Install pods (Mac only):
+cd ios && pod install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Vison Camera Permissions
+Once the native projects are generated, make sure that the following lines exist in your native projects:
 
-## Learn more
+#### android/app/src/main/AndroidManifest.xml
+```xml
+<manifest>
+   ...
+   <uses-permission android:name="android.permission.CAMERA"/>
+   ...
+</manifest>
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+#### ios/CardVault/Info.plist
+```xml
+<plist>
+   <dict>
+      ...
+      <key>NSCameraUsageDescription</key>
+      <string>$(PRODUCT_NAME) needs access to your camera.</string>
+      ...
+   </dict>
+</plist>
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Start the app
+Make sure your emulator is running, or your physical device is connected, then run either:
 
-## Join the community
+```bash
+# Android
+npm run android
 
-Join our community of developers creating universal apps.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+# iOS
+npm run ios
+```
